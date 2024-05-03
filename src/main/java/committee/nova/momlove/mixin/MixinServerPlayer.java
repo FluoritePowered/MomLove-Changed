@@ -19,6 +19,11 @@ public abstract class MixinServerPlayer extends Player {
         super(l, p, f, g, k);
     }
 
+    @Redirect(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z"))
+    private boolean redirect$hybridServer(ServerPlayer instance) {
+        return instance.isSpectator() || MomLove.getConfig().getUuidData().contains(getUUID());
+    }
+
     @Redirect(method = "restoreFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
     private boolean redirect$restoreFrom(GameRules instance, GameRules.Key<GameRules.BooleanValue> v) {
         return instance.getBoolean(v) || MomLove.getConfig().getUuidData().contains(getUUID());
